@@ -1,9 +1,29 @@
 import game as wordle
 import os
 from time import sleep
-from PyDictionary import PyDictionary
 
-dictionary=PyDictionary() # dictionary
+py_dic = False
+try:
+    from PyDictionary import PyDictionary
+    py_dic = True
+except:pass
+
+from contextlib import contextmanager
+import sys, os
+
+@contextmanager
+def suppress_stdout():
+    with open(os.devnull, "w") as devnull:
+        old_stdout = sys.stdout
+        sys.stdout = devnull
+        try:  
+            yield
+        finally:
+            sys.stdout = old_stdout
+
+
+if py_dic:
+    dictionary=PyDictionary() # dictionary
 
 
 def clear(): os.system('cls' if os.name == 'nt' else 'clear')
@@ -102,22 +122,28 @@ print('\033[1m'+ words.answer.lower() +'\033[0m') # printing word in bold
 
 
 # Printing word definition if possible
-try:
-    if dictionary.meaning(words.answer) != None:
-        for each in dictionary.meaning(words.answer): 
+if py_dic:
+    with suppress_stdout():
+        meaning = None
+        meaning = dictionary.meaning(words.answer)
 
-            print('\033[4m'+ each +'\033[0m') # printing the type of word (verb / noun) in underlined
-            
+    try:
+        if meaning != None:
+            for each in meaning: 
 
-            for each in dictionary.meaning(words.answer)[each]:
+                print('\033[4m'+ each +'\033[0m') # printing the type of word (verb / noun) in underlined
                 
-                print('\033[3m'+each + '\033[0m') # printing the definitions of the word in italics
 
-            print()
-    else:
-        print("No definition available.")
+                for each in dictionary.meaning(words.answer)[each]:
+                    
+                    print('\033[3m'+each + '\033[0m') # printing the definitions of the word in italics
 
-except:
-    print("No definition available.")
+                print()
+        else:
+            print(colours.WRONG + "* No definition available.\n* Check your internet connection." + colours.ENDC)
 
-print("\n\n\n\n\n\n\n\n\n")
+    except:
+        print(colours.WRONG + "* No definition available.\n* Check your internet connection." + colours.ENDC)
+
+else:
+    print(colours.WRONG + "* PyDictionary not available. Install via 'pip install PyDictionary'." + colours.ENDC)

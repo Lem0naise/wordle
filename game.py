@@ -23,8 +23,6 @@ class Words():
             self.answers = [i.strip() for i in self.temp_answers] # stripping the newline characters
             self.answer = random.choice(self.answers).strip().upper() # selecting a random answer from the words
 
-            self.answer = "craze".upper()
-
         with open(sys.argv[0][:-8]+"words.txt", "r") as words_file: # all accepted guesses (getting path and cutting off start.py)
             self.temp_words = words_file.readlines()
             self.all_words = [i.strip() for i in self.temp_words] # stripping the newline characters
