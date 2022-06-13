@@ -1,1 +1,1 @@
-# Download the files and run main.py!
+# Download the files and run start.py!
